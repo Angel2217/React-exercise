@@ -1,0 +1,39 @@
+#wrapper {
+  font-size: 14px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+button {
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  color: blue;
+  margin-top: 20px;
+}
+ 
+#user-details {
+  margin-top: 20px;
+  margin-left: 200px;
+}
+
+#user-posts {
+  margin-left: 40px;
+}
+
+.post-title {
+  font-weight: bold;
+  margin-top: 50px;
+  text-transform: uppercase;
+}
+
+.post-details {
+  font-size: 12px;
+}
+
+#userDiv {
+  display: flex;
+  flex-direction: row;
+}
