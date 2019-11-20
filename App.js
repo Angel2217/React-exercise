@@ -14,38 +14,47 @@ class App extends React.Component {
       posts: [],
       currentUser: null,
       currentPosts: null,
-      clicked: false,
     };
   }
 
 
   componentDidMount() {
-    Promise.all([fetch('http://jsonplaceholder.typicode.com/users'),
-    fetch('https://jsonplaceholder.typicode.com/posts')])
-      .then(([res1, res2]) => {
-        return Promise.all([res1.json(), res2.json()])
-      })
-      .then(([res1, res2]) => {
-        console.log(res1, res2);
+    fetch('http://jsonplaceholder.typicode.com/users')
+      .then(res => res.json())
+      .then(data => {
         this.setState({
-          users: res1,
-          posts: res2,
-        });
+          users: data,
+          currentUser: data[0],
+        })
+        this.fetchPosts(this.state.currentUser);
+        console.log(data)
+      });
+  }
+
+
+  fetchPosts(user) {
+    fetch('https://jsonplaceholder.typicode.com/posts?userId=' + user.id)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({
+          posts: this.state.posts.concat(data),
+          currentPosts: data,
+        })
+        console.log(data)
       })
   }
 
 
   render() {
-    const isClicked = this.state.clicked;
     return <div id='wrapper'>
       <div id='userDiv'>
         <UserList users={this.state.users}
           onClick={() => this.handleClick()}
         />
-        {isClicked && <UserDetail user={this.state.currentUser} />}
+        {this.state.currentUser && <UserDetail user={this.state.currentUser} />}
       </div>
       <div id='postDiv'>
-        {isClicked && <PostList posts={this.state.currentPosts} />}
+        {this.state.currentPosts && <PostList posts={this.state.currentPosts} />}
       </div>
     </div>
   }
@@ -54,20 +63,23 @@ class App extends React.Component {
   handleClick = () => e => {
     var clickedUser = this.state.users.find(function (user) {
       return user.id == e.target.id
-    });
-    var clickedPosts = this.state.posts.filter(function (post) {
-      return post.userId == e.target.id
-    });
+    })
     this.setState({
       currentUser: clickedUser,
-      currentPosts: clickedPosts,
-      clicked: true,
     })
-  }
+    var clickedPosts = this.state.posts.filter(function (post) {
+      return post.userId == e.target.id
+    })
+     clickedPosts.length > 0 ?
+      this.setState({
+        currentPosts: clickedPosts,
+      }) :
+      this.fetchPosts(e.target)
+  } 
+  
 
 
-
-} 
+}
 
 
 
